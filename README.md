@@ -1,70 +1,65 @@
-# Getting Started with Create React App
+# AI CurateStore
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+AI CurateStore is a powerful platform that simplifies the use of advanced AI technologies, particularly GPT (Generative Pre-trained Transformer) models, across various domains. Designed for content creators, developers, and educators, it provides specialized modules for effortless access to AI-driven solutions.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Content Creation Module**: Generate high-quality content for marketing and writing purposes, with advanced features like tone customization and plagiarism checks.
+- **Developer Tools Module**: Assist developers with code generation, documentation, and error resolution based on natural language prompts.
+- **Educational Content Module**: Enable educators to create personalized learning materials, including lesson plans and practice exercises, with difficulty level adjustment.
 
-### `npm start`
+## Technologies Used
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Backend: Python, Flask
+- Frontend: React.js
+- GPT Integration: OpenAI API
+- Database: (specify your choice, e.g., SQLite, PostgreSQL, MongoDB)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Getting Started
 
-### `npm test`
+### Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Python (version X.X.X)
+- Node.js (version X.X.X)
+- (Additional prerequisites, if any)
 
-### `npm run build`
+### Installation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Clone the repository:
+2. Install backend dependencies:
+cd ai-curatestore/backend
+pip install -r requirements.txt
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. Install frontend dependencies:
+cd ../frontend
+npm install
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+4. Set up environment variables:
 
-### `npm run eject`
+Backend
+export OPENAI_API_KEY=your_openai_api_key
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Frontend
+export REACT_APP_API_BASE_URL=http://localhost:5000
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+5. Start the backend server:
+cd ../backend
+flask run
+6. Start the frontend development server:
+cd ../frontend
+npm start
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+The application should now be running at `http://localhost:3000`.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Contributing
 
-## Learn More
+Contributions are welcome! Please follow the guidelines in the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## License
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+This project is licensed under the [MIT License](LICENSE).
 
-### Code Splitting
+## Acknowledgements
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [OpenAI](https://openai.com/) for providing the GPT models and API
+- (Additional acknowledgements, if any)
