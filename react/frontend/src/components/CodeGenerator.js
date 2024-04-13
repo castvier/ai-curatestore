@@ -1,26 +1,32 @@
+// CodeGenerator.js
 import React, { useState } from 'react';
 import { generateCode } from '../api/codeApi';
+import './CodeGenerator.css';
+
 
 const CodeGenerator = () => {
   const [prompt, setPrompt] = useState('');
   const [generatedCode, setGeneratedCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
 
-  const handlePromptChange = (e) => {
-    setPrompt(e.target.value);
+  const handlePromptChange = (event) => {
+    setPrompt(event.target.value);
   };
 
   const handleCodeGeneration = async () => {
+    if (!prompt) {
+      setError('Please enter a prompt.');
+      return;
+    }
     setIsLoading(true);
-    setError(null);
-
+    setError('');
     try {
-      const generatedCode = await generateCode(prompt);
-      setGeneratedCode(generatedCode);
+      const code = await generateCode(prompt);
+      setGeneratedCode(code);
     } catch (error) {
-      console.error('Error generating code:', error);
-      setError('Failed to generate code. Please try again.');
+      setError('Failed to generate code. Please try again later.');
+      console.error('Code generation error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -29,21 +35,15 @@ const CodeGenerator = () => {
   return (
     <div>
       <h3>Code Generator</h3>
-      <div>
-        <label htmlFor="prompt">Prompt:</label>
-        <input
-          type="text"
-          id="prompt"
-          value={prompt}
-          onChange={handlePromptChange}
-          placeholder="Enter your prompt for code generation..."
-        />
-        <button onClick={handleCodeGeneration} disabled={isLoading}>
-          {isLoading ? 'Generating...' : 'Generate Code'}
-        </button>
-      </div>
-      {isLoading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
+      <textarea
+        value={prompt}
+        onChange={handlePromptChange}
+        placeholder="Enter your prompt here..."
+      />
+      <button onClick={handleCodeGeneration} disabled={isLoading}>
+        {isLoading ? 'Generating...' : 'Generate Code'}
+      </button>
+      {error && <p className="error">{error}</p>}
       {generatedCode && (
         <div>
           <h4>Generated Code:</h4>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { generateEducationalContent } from '../api/educationalContentApi';
+import '../styles.css'; // Import the styles
 
 const EducationalContentGenerator = () => {
   const [prompt, setPrompt] = useState('');
@@ -12,6 +13,11 @@ const EducationalContentGenerator = () => {
   };
 
   const handleContentGeneration = async () => {
+    if (!prompt) {
+      setError('Please enter a prompt for educational content generation.');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -27,7 +33,7 @@ const EducationalContentGenerator = () => {
   };
 
   return (
-    <div>
+    <div className="component">
       <h3>Educational Content Generator</h3>
       <div>
         <label htmlFor="prompt">Prompt:</label>
