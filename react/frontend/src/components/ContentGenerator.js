@@ -1,15 +1,23 @@
+// ContentGenerator.js
 import React, { useState } from 'react';
 import { generateContent } from '../api/contentApi';
-import '../styles/styles.css'; // Updated path to match your directory structure
+import '../styles/styles.css';
 
 const ContentGenerator = () => {
   const [prompt, setPrompt] = useState('');
+  const [tone, setTone] = useState('Neutral'); // Add tone state
   const [generatedContent, setGeneratedContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const toneOptions = ['Neutral', 'Formal', 'Informal', 'Persuasive', 'Enthusiastic'];
+
   const handlePromptChange = (e) => {
     setPrompt(e.target.value);
+  };
+
+  const handleToneChange = (e) => { // Add tone change handler
+    setTone(e.target.value);
   };
 
   const handleContentGeneration = async () => {
@@ -22,7 +30,8 @@ const ContentGenerator = () => {
     setError(null);
 
     try {
-      const generatedContent = await generateContent(prompt);
+      // Pass tone along with prompt
+      const generatedContent = await generateContent(prompt, tone);
       setGeneratedContent(generatedContent);
     } catch (error) {
       console.error('Error generating content:', error);
@@ -44,6 +53,12 @@ const ContentGenerator = () => {
           onChange={handlePromptChange}
           placeholder="Enter your prompt for content generation..."
         />
+        <label htmlFor="tone">Tone:</label>
+        <select id="tone" value={tone} onChange={handleToneChange}>
+          {toneOptions.map((tone) => (
+            <option key={tone} value={tone}>{tone}</option>
+          ))}
+        </select>
         <button onClick={handleContentGeneration} disabled={isLoading}>
           {isLoading ? 'Generating...' : 'Generate Content'}
         </button>
