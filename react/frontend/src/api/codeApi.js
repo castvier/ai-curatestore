@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { mockCodeResponse } from './mockData';
 
-const apiBaseUrl = 'http://localhost:5001';
+const apiBaseUrl = 'http://localhost:5003';
 
 export const generateCode = async (prompt) => {
   try {
@@ -15,6 +15,7 @@ export const generateCode = async (prompt) => {
     }
   } catch (error) {
     console.error('Error generating code:', error);
+    console.error('Error response:', error.response);
     throw error;
   }
 };

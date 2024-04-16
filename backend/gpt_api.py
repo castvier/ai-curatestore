@@ -1,78 +1,107 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+import openai
+from config import OPENAI_API_KEY
 import logging
-import os
 
-# Assuming your gpt_api module and its methods are correctly implemented
-from gpt_api import (
-    generate_content as gpt_generate_content,
-    generate_code as gpt_generate_code,
-    generate_educational_content as gpt_generate_educational_content,
-)
+# Configure your logger
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger()
 
-app = Flask(__name__)
-CORS(app)  # Enable CORS on all routes
-logging.basicConfig(level=logging.INFO)  # Configure logging
+openai.api_key = OPENAI_API_KEY
 
-# Apply HTTPS and security headers with Talisman
-# Commented out for development. Uncomment for production with correct configuration
-# from flask_talisman import Talisman
-# Talisman(app)
+def generate_content(prompt, tone='Neutral', engine="text-davinci-003", max_tokens=1024, temperature=0.5):
+    """
+    Generate content using the OpenAI GPT API, adjusting the prompt based on the tone.
+    """
+    tone_prefix = f"Tone: {tone}\n"
+    modified_prompt = tone_prefix + prompt
 
-@app.route('/generate_content', methods=['POST', 'OPTIONS'])
-def content_route():
-    if request.method == 'OPTIONS':  # Needed for preflight requests
-        return build_preflight_response()
-    elif request.method == 'POST':
-        try:
-            data = request.get_json()
-            prompt = data['prompt']
-            tone = data.get('tone', 'Neutral')
-            generated_content = gpt_generate_content(prompt, tone)
-            return jsonify({'generated_content': generated_content}), 200
-        except KeyError as e:
-            app.logger.error(f'Missing key: {e}')
-            return jsonify({'error': f'Missing key: {e}'}), 400
-        except Exception as e:
-            app.logger.error(f'An error occurred: {e}')
-            return jsonify({'error': f'An error occurred: {e}'}), 500
+    try:
+        response = openai.Completion.create(
+            engine=engine,
+            prompt=modified_prompt,
+            max_tokens=max_tokens,
+            temperature=temperature
+        )
+        generated_content = response.choices[0].text.strip()
+        is_plagiarized = check_for_plagiarism(generated_content)
+        return {'generated_content': generated_content, 'is_plagiarized': is_plagiarized}
+    except openai.error.OpenAIError as e:
+        logger.error(f"OpenAI API error: {str(e)}")
+        return {'error': f"OpenAI API error: {str(e)}"}
+    except Exception as e:
+        logger.error(f"An unexpected error occurred: {str(e)}")
+        return {'error': f"An unexpected error occurred: {str(e)}"}
 
-@app.route('/generate_code', methods=['POST', 'OPTIONS'])
-def code_route():
-    # Similar OPTIONS handling as above
-    if request.method == 'OPTIONS':
-        return build_preflight_response()
-    elif request.method == 'POST':
-        try:
-            data = request.get_json()
-            prompt = data['prompt']
-            generated_code = gpt_generate_code(prompt)
-            return jsonify({'generated_code': generated_code}), 200
-        except Exception as e:
-            app.logger.error(f'An error occurred: {e}')
-            return jsonify({'error': f'An error occurred: {e}'}), 500
 
-@app.route('/generate_educational_content', methods=['POST', 'OPTIONS'])
-def educational_content_route():
-    # Similar OPTIONS handling as above
-    if request.method == 'OPTIONS':
-        return build_preflight_response()
-    elif request.method == 'POST':
-        try:
-            data = request.get_json()
-            prompt = data['prompt']
-            generated_content = gpt_generate_educational_content(prompt)
-            return jsonify({'generated_content': generated_content}), 200
-        except Exception as e:
-            app.logger.error(f'An error occurred: {e}')
-            return jsonify({'error': f'An error occurred: {e}'}), 500
+def generate_code(prompt, engine="code-davinci-002", max_tokens=1024, temperature=0.5):
+    """
+    Generate code using the OpenAI GPT API.
+    """
+    try:
+        response = openai.Completion.create(
+            engine=engine,
+            prompt=prompt,
+            max_tokens=max_tokens,
+            temperature=temperature
+        )
+        generated_code = response.choices[0].text.strip()
+        return {'generated_code': generated_code}
+    except openai.error.OpenAIError as e:
+        logger.error(f"OpenAI API error: {str(e)}")
+        return {'error': f"OpenAI API error: {str(e)}"}
+    except Exception as e:
+        logger.error(f"An unexpected error occurred: {str(e)}")
+        return {'error': f"An unexpected error occurred: {str(e)}"}
 
-def build_preflight_response():
-    response = jsonify({'status': 'ok'})
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', '*')
-    response.headers.add('Access-Control-Allow-Methods', '*')
-    return response
+def generate_educational_content(prompt, difficulty="Easy", engine="text-davinci-003", max_tokens=1024, temperature=0.5):
+    """
+    Generate educational content using the OpenAI GPT API, adjusted for difficulty level.
+    """
+    difficulty_prefix_map = {
+        "Easy": "Explain like I'm five: ",
+        "Medium": "Explain like I'm a high school student: ",
+        "Hard": "Explain like I'm a graduate student specializing in the subject: "
+    }
+    difficulty_prefix = difficulty_prefix_map.get(difficulty, "Explain like I'm five: ")
+    modified_prompt = difficulty_prefix + prompt
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    try:
+        response = openai.Completion.create(
+            engine=engine,
+            prompt=modified_prompt,
+            max_tokens=max_tokens,
+            temperature=temperature
+        )
+        generated_educational_content = response.choices[0].text.strip()
+        return {'generated_educational_content': generated_educational_content}
+    except openai.error.OpenAIError as e:
+        logger.error(f"OpenAI API error: {str(e)}")
+        return {'error': f"OpenAI API error: {str(e)}"}
+    except Exception as e:
+        logger.error(f"An unexpected error occurred: {str(e)}")
+        return {'error': f"An unexpected error occurred: {str(e)}"}
+
+# Plagiarism check function placeholder
+# Implement if needed
+def check_for_plagiarism(content):
+    """
+    Check the generated content for plagiarism.
+    This function should be replaced with an actual call to a plagiarism detection API or custom logic.
+    """
+    # Placeholder for your implementation
+    # Example structure for integrating with a plagiarism detection service:
+    try:
+        # This is where you'd send 'content' to the plagiarism detection service
+        # and parse the response to determine if plagiarism is detected
+        # For example:
+        # response = plagiarism_service.check(content)
+        # is_plagiarized = response.get("is_plagiarized", False)
+        
+        # For this placeholder, we'll return False to indicate no plagiarism was detected
+        is_plagiarized = False
+        return is_plagiarized
+    except Exception as e:
+        # You should decide how to handle exceptions here
+        # For this placeholder, we'll log the exception and return False
+        logger.error(f"Plagiarism check error: {str(e)}")
+        return False
