@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { generateContent } from '../api/contentApi';
-import '../styles.css'; // Import the styles
+import '../styles/styles.css'; // Updated path to match your directory structure
 
 const ContentGenerator = () => {
   const [prompt, setPrompt] = useState('');

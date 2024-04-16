@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import './styles.css'; // Import the styles.css file
+import './styles/styles.css'; // Corrected path assuming styles.css is within the styles folder
+
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
