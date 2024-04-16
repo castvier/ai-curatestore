@@ -1,16 +1,20 @@
 import axios from 'axios';
+import { mockCodeResponse } from './mockData';
 
-// If mockData.js doesn't exist or you're not using mock responses, remove this import
-// import { mockCodeResponse } from './mockData';
-
-const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
+const apiBaseUrl = 'http://localhost:5001';
 
 export const generateCode = async (prompt) => {
   try {
-    const response = await axios.post(`${apiBaseUrl}/generate_code`, { prompt });
-    return response.data.generated_code;
+    // Check if the backend URL is available
+    if (apiBaseUrl) {
+      const response = await axios.post(`${apiBaseUrl}/generate_code`, { prompt });
+      return response.data.generated_code;
+    } else {
+      // Return mock data if the backend URL is not available
+      return mockCodeResponse.generated_code;
+    }
   } catch (error) {
     console.error('Error generating code:', error);
-    throw error; // You may want to handle the error instead of throwing it, depending on your error boundary handling strategy
+    throw error;
   }
 };

@@ -1,5 +1,9 @@
 from flask import Flask, request, jsonify
-from flask_talisman import Talisman
+from flask_cors import CORS
+import logging
+import os
+
+# Assuming your gpt_api module and its methods are correctly implemented
 from gpt_api import (
     generate_content as gpt_generate_content,
     generate_code as gpt_generate_code,
@@ -7,41 +11,68 @@ from gpt_api import (
 )
 
 app = Flask(__name__)
-Talisman(app)  # Apply HTTPS and security headers to enhance security
+CORS(app)  # Enable CORS on all routes
+logging.basicConfig(level=logging.INFO)  # Configure logging
 
-@app.route('/generate_content', methods=['POST'])
+# Apply HTTPS and security headers with Talisman
+# Commented out for development. Uncomment for production with correct configuration
+# from flask_talisman import Talisman
+# Talisman(app)
+
+@app.route('/generate_content', methods=['POST', 'OPTIONS'])
 def content_route():
-    try:
-        data = request.get_json()  # Ensuring the JSON data is correctly parsed
-        prompt = data['prompt']
-        tone = data.get('tone', 'Neutral')  # Retrieve the tone from the request, defaulting to 'Neutral'
-        # Ensure your gpt_generate_content function can handle the tone parameter
-        generated_content = gpt_generate_content(prompt, tone)
-        return jsonify({'generated_content': generated_content}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    if request.method == 'OPTIONS':  # Needed for preflight requests
+        return build_preflight_response()
+    elif request.method == 'POST':
+        try:
+            data = request.get_json()
+            prompt = data['prompt']
+            tone = data.get('tone', 'Neutral')
+            generated_content = gpt_generate_content(prompt, tone)
+            return jsonify({'generated_content': generated_content}), 200
+        except KeyError as e:
+            app.logger.error(f'Missing key: {e}')
+            return jsonify({'error': f'Missing key: {e}'}), 400
+        except Exception as e:
+            app.logger.error(f'An error occurred: {e}')
+            return jsonify({'error': f'An error occurred: {e}'}), 500
 
-@app.route('/generate_code', methods=['POST'])
+@app.route('/generate_code', methods=['POST', 'OPTIONS'])
 def code_route():
-    try:
-        data = request.get_json()
-        prompt = data['prompt']
-        # Make sure gpt_generate_code is implemented correctly
-        generated_code = gpt_generate_code(prompt)
-        return jsonify({'generated_code': generated_code}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    # Similar OPTIONS handling as above
+    if request.method == 'OPTIONS':
+        return build_preflight_response()
+    elif request.method == 'POST':
+        try:
+            data = request.get_json()
+            prompt = data['prompt']
+            generated_code = gpt_generate_code(prompt)
+            return jsonify({'generated_code': generated_code}), 200
+        except Exception as e:
+            app.logger.error(f'An error occurred: {e}')
+            return jsonify({'error': f'An error occurred: {e}'}), 500
 
-@app.route('/generate_educational_content', methods=['POST'])
+@app.route('/generate_educational_content', methods=['POST', 'OPTIONS'])
 def educational_content_route():
-    try:
-        data = request.get_json()
-        prompt = data['prompt']
-        # Confirm that gpt_generate_educational_content works as expected
-        generated_content = gpt_generate_educational_content(prompt)
-        return jsonify({'generated_content': generated_content}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    # Similar OPTIONS handling as above
+    if request.method == 'OPTIONS':
+        return build_preflight_response()
+    elif request.method == 'POST':
+        try:
+            data = request.get_json()
+            prompt = data['prompt']
+            generated_content = gpt_generate_educational_content(prompt)
+            return jsonify({'generated_content': generated_content}), 200
+        except Exception as e:
+            app.logger.error(f'An error occurred: {e}')
+            return jsonify({'error': f'An error occurred: {e}'}), 500
+
+def build_preflight_response():
+    response = jsonify({'status': 'ok'})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', '*')
+    response.headers.add('Access-Control-Allow-Methods', '*')
+    return response
 
 if __name__ == '__main__':
     app.run(debug=True)
