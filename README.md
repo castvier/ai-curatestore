@@ -21,37 +21,44 @@ To set up this project on your local machine, follow these steps:
 1. Clone the repository to your local machine.
 2. Install the necessary dependencies.
 
-\`\`\`bash
-git clone [repository-url]
-cd [repository-directory]
-npm install
-\`\`\`
+    ```
+    git clone [repository-url]
+    cd [repository-directory]
+    npm install
+    ```
 
-3. Change into the server directory to configure the environment variables and start the server.
+3. Change into the server directory to configure the environment variables and start the server. For Zsh users:
 
-\`\`\`bash
-cd server
-export OPENAI_API_KEY='your-openai-api-key'
-\`\`\`
+    ```
+    cd server
+    export OPENAI_API_KEY='your-openai-api-key'
+    ```
+
+    For persistent environment variables in Zsh, add the export line to your `.zshrc` file:
+
+    ```
+    echo "export OPENAI_API_KEY='your-openai-api-key'" >> ~/.zshrc
+    source ~/.zshrc
+    ```
 
 4. Install dependencies in the server if separate from the root:
 
-\`\`\`bash
-npm install
-\`\`\`
+    ```
+    npm install
+    ```
 
 5. Start the server.
 
-\`\`\`bash
-node app.js
-\`\`\`
+    ```
+    node app.js
+    ```
 
 6. In a new terminal window, navigate to the frontend directory.
 
-\`\`\`bash
-cd react/frontend
-npm install
-\`\`\`
+    ```
+    cd react/frontend
+    npm install
+    ```
 
 ## Usage
 
@@ -61,9 +68,9 @@ Once you have completed the installation steps:
 
 2. In a new terminal, start the frontend React application:
 
-\`\`\`bash
-npm start
-\`\`\`
+    ```
+    npm start
+    ```
 
 This command will run the React application in development mode. Open [http://localhost:3000](http://localhost:3000) to view it in your browser. The page will reload if you make edits, and you will also see any lint errors in the console.
 
