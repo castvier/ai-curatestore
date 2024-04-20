@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { generateEducationalContent } from '../api/educationalContentApi';
-import '../styles/styles.css'; // Make sure the path is correct for your project structure
+import '../styles/styles.css';
 
 const difficultyLevels = ['Easy', 'Medium', 'Hard'];
 
@@ -12,7 +12,6 @@ const EducationalContentGenerator = () => {
   const [error, setError] = useState(null);
 
   const handlePromptChange = (e) => setPrompt(e.target.value);
-
   const handleDifficultyChange = (e) => setDifficulty(e.target.value);
 
   const handleContentGeneration = async () => {
@@ -26,7 +25,7 @@ const EducationalContentGenerator = () => {
 
     try {
       const generatedContent = await generateEducationalContent(prompt, difficulty);
-      setGeneratedContent(generatedContent);
+      setGeneratedContent(generatedContent.generated_educational_content);
     } catch (error) {
       console.error('Error generating educational content:', error);
       setError('Failed to generate educational content. Please try again.');

@@ -3,32 +3,33 @@ import { generateCode } from '../api/codeApi';
 import './CodeGenerator.css';
 
 const CodeGenerator = () => {
-  const [prompt, setPrompt] = useState(''); // State to hold the user input
-  const [generatedCode, setGeneratedCode] = useState(''); // State to hold the generated code
-  const [isLoading, setIsLoading] = useState(false); // State to handle loading status
-  const [error, setError] = useState(''); // State to handle any errors
+  const [prompt, setPrompt] = useState('');
+  const [generatedCode, setGeneratedCode] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Function to update state with user input
   const handlePromptChange = (event) => {
     setPrompt(event.target.value);
   };
 
-  // Function to handle the code generation process
   const handleCodeGeneration = async () => {
     if (!prompt) {
-      setError('Please enter a prompt.'); // Validate input
+      setError('Please enter a prompt.');
       return;
     }
-    setIsLoading(true); // Set loading state
-    setError(''); // Clear any previous errors
+
+    setIsLoading(true);
+    setError(null);
+    setGeneratedCode('');
+
     try {
-      const code = await generateCode(prompt);
-      setGeneratedCode(code); // Set the generated code
+      const response = await generateCode(prompt);
+      setGeneratedCode(response.generated_code);
     } catch (error) {
-      setError('Failed to generate code. Please try again later.'); // Handle errors
       console.error('Code generation error:', error);
+      setError('Failed to generate code. Please try again later.');
     } finally {
-      setIsLoading(false); // Reset loading state
+      setIsLoading(false);
     }
   };
 
@@ -41,9 +42,9 @@ const CodeGenerator = () => {
         onChange={handlePromptChange}
         placeholder="Enter your prompt here..."
       />
-      <button 
+      <button
         className="generator-button"
-        onClick={handleCodeGeneration} 
+        onClick={handleCodeGeneration}
         disabled={isLoading}
       >
         {isLoading ? 'Generating...' : 'Generate Code'}

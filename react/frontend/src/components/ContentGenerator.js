@@ -1,11 +1,10 @@
-// ContentGenerator.js
 import React, { useState } from 'react';
 import { generateContent } from '../api/contentApi';
 import '../styles/styles.css';
 
 const ContentGenerator = () => {
   const [prompt, setPrompt] = useState('');
-  const [tone, setTone] = useState('Neutral'); // Add tone state
+  const [tone, setTone] = useState('Neutral');
   const [generatedContent, setGeneratedContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -16,7 +15,7 @@ const ContentGenerator = () => {
     setPrompt(e.target.value);
   };
 
-  const handleToneChange = (e) => { // Add tone change handler
+  const handleToneChange = (e) => {
     setTone(e.target.value);
   };
 
@@ -30,9 +29,8 @@ const ContentGenerator = () => {
     setError(null);
 
     try {
-      // Pass tone along with prompt
       const generatedContent = await generateContent(prompt, tone);
-      setGeneratedContent(generatedContent);
+      setGeneratedContent(generatedContent.generated_content);
     } catch (error) {
       console.error('Error generating content:', error);
       setError('Failed to generate content. Please try again.');
