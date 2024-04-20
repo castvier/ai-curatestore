@@ -3124,9 +3124,6 @@ backend/node_modules/vary/index.js
 backend/node_modules/vary/LICENSE
 backend/node_modules/vary/package.json
 backend/node_modules/vary/README.md
-backend/server/app.js
-backend/server/package-lock.json
-backend/server/package.json
 backend/server/node_modules/.package-lock.json
 backend/server/node_modules/.bin/mime
 backend/server/node_modules/.bin/openai
