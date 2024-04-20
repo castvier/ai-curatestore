@@ -25,6 +25,13 @@ const ContentGenerator = () => {
       return;
     }
 
+    // Check if the prompt is related to content generation
+    const isRelatedToContentGeneration = !/code|program|algorithm|function|class|method/i.test(prompt);
+    if (!isRelatedToContentGeneration) {
+      setError('The prompt should be related to content generation, not code. Please try again.');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 

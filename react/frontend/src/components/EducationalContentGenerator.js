@@ -12,11 +12,19 @@ const EducationalContentGenerator = () => {
   const [error, setError] = useState(null);
 
   const handlePromptChange = (e) => setPrompt(e.target.value);
+
   const handleDifficultyChange = (e) => setDifficulty(e.target.value);
 
   const handleContentGeneration = async () => {
     if (!prompt) {
       setError('Please enter a prompt for educational content generation.');
+      return;
+    }
+
+    // Check if the prompt is related to educational content generation
+    const isRelatedToEducationalContentGeneration = !/code|program|algorithm|function|class|method/i.test(prompt);
+    if (!isRelatedToEducationalContentGeneration) {
+      setError('The prompt should be related to educational content generation, not code. Please try again.');
       return;
     }
 
