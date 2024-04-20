@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Generator</title>
+</head>
+<body>
+    <h1>Content Generator</h1>
+    <form method="post">
+        <label for="prompt">Prompt:</label><br>
+        <textarea id="prompt" name="prompt" rows="4" cols="50">{{ content_generator.prompt }}</textarea><br>
+        <label for="tone">Tone:</label><br>
+        <select id="tone" name="tone">
+            <option value="Neutral" {% if content_generator.tone == 'Neutral' %}selected{% endif %}>Neutral</option>
+            <option value="Formal" {% if content_generator.tone == 'Formal' %}selected{% endif %}>Formal</option>
+            <option value="Informal" {% if content_generator.tone == 'Informal' %}selected{% endif %}>Informal</option>
+            <option value="Persuasive" {% if content_generator.tone == 'Persuasive' %}selected{% endif %}>Persuasive</option>
+            <option value="Enthusiastic" {% if content_generator.tone == 'Enthusiastic' %}selected{% endif %}>Enthusiastic</option>
+        </select><br>
+        <input type="submit" value="Generate Content">
+    </form>
+    {% if content_generator.generated_content %}
+        <h2>Generated Content:</h2>
+        <p>{{ content_generator.generated_content }}</p>
+    {% endif %}
+    {% if content_generator.error %}
+        <p style="color: red;">{{ content_generator.error }}</p>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Generator</title>
+</head>
+<body>
+    <h1>Code Generator</h1>
+    <form method="post">
+        <label for="prompt">Prompt:</label><br>
+        <textarea id="prompt" name="prompt" rows="4" cols="50">{{ code_generator.prompt }}</textarea><br>
+        <input type="submit" value="Generate Code">
+    </form>
+    {% if code_generator.generated_code %}
+        <h2>Generated Code:</h2>
+        <pre>{{ code_generator.generated_code }}</pre>
+    {% endif %}
+    {% if code_generator.error %}
+        <p style="color: red;">{{ code_generator.error }}</p>
+    {% endif %}
+</body>
+</html>

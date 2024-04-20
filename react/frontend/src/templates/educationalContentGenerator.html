@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational Content Generator</title>
+</head>
+<body>
+    <h1>Educational Content Generator</h1>
+    <form method="post">
+        <label for="prompt">Prompt:</label><br>
+        <textarea id="prompt" name="prompt" rows="4" cols="50">{{ educational_content_generator.prompt }}</textarea><br>
+        <label for="difficulty">Difficulty:</label><br>
+        <select id="difficulty" name="difficulty">
+            <option value="Easy" {% if educational_content_generator.difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+            <option value="Medium" {% if educational_content_generator.difficulty == 'Medium' %}selected{% endif %}>Medium</option>
+            <option value="Hard" {% if educational_content_generator.difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+        </select><br>
+        <input type="submit" value="Generate Educational Content">
+    </form>
+    {% if educational_content_generator.generated_content %}
+        <h2>Generated Educational Content:</h2>
+        <p>{{ educational_content_generator.generated_content }}</p>
+    {% endif %}
+    {% if educational_content_generator.error %}
+        <p style="color: red;">{{ educational_content_generator.error }}</p>
+    {% endif %}
+</body>
+</html>
