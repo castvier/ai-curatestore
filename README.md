@@ -1,65 +1,111 @@
-# AI CurateStore
+# Educational Content Generator
 
-AI CurateStore is a powerful platform that simplifies the use of advanced AI technologies, particularly GPT (Generative Pre-trained Transformer) models, across various domains. Designed for content creators, developers, and educators, it provides specialized modules for effortless access to AI-driven solutions.
+This project integrates React with Node.js to create an educational content generator using the OpenAI API. It allows users to input a prompt and select a difficulty level for generating educational content dynamically.
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Features](#features)
+- [API](#api)
+- [Dependencies](#dependencies)
+- [Configuration](#configuration)
+- [Documentation](#documentation)
+- [Contributors](#contributors)
+- [License](#license)
+
+## Installation
+
+To set up this project on your local machine, follow these steps:
+
+1. Clone the repository to your local machine.
+2. Install the necessary dependencies.
+
+\`\`\`bash
+git clone [repository-url]
+cd [repository-directory]
+npm install
+\`\`\`
+
+3. Change into the server directory to configure the environment variables and start the server.
+
+\`\`\`bash
+cd server
+export OPENAI_API_KEY='your-openai-api-key'
+\`\`\`
+
+4. Install dependencies in the server if separate from the root:
+
+\`\`\`bash
+npm install
+\`\`\`
+
+5. Start the server.
+
+\`\`\`bash
+node app.js
+\`\`\`
+
+6. In a new terminal window, navigate to the frontend directory.
+
+\`\`\`bash
+cd react/frontend
+npm install
+\`\`\`
+
+## Usage
+
+Once you have completed the installation steps:
+
+1. Ensure the server is running as described in the installation section.
+
+2. In a new terminal, start the frontend React application:
+
+\`\`\`bash
+npm start
+\`\`\`
+
+This command will run the React application in development mode. Open [http://localhost:3000](http://localhost:3000) to view it in your browser. The page will reload if you make edits, and you will also see any lint errors in the console.
 
 ## Features
 
-- **Content Creation Module**: Generate high-quality content for marketing and writing purposes, with advanced features like tone customization and plagiarism checks.
-- **Developer Tools Module**: Assist developers with code generation, documentation, and error resolution based on natural language prompts.
-- **Educational Content Module**: Enable educators to create personalized learning materials, including lesson plans and practice exercises, with difficulty level adjustment.
+- **Content Generation**: Generate custom content based on user inputs and selected tones.
+- **Code Generation**: Automatically generate code snippets based on prompts.
+- **Educational Content**: Generate educational content tailored to different difficulty levels.
 
-## Technologies Used
+## API
 
-- Backend: Python, Flask
-- Frontend: React.js
-- GPT Integration: OpenAI API
-- Database: (specify your choice, e.g., SQLite, PostgreSQL, MongoDB)
+The backend API supports three endpoints:
 
-## Getting Started
+- `POST /api/generate_content`: Generates content based on a given prompt and tone.
+- `POST /api/generate_code`: Generates code from a user-provided prompt.
+- `POST /api/generate_educational_content`: Generates educational content based on the difficulty level and prompt.
 
-### Prerequisites
+## Dependencies
 
-- Python (version X.X.X)
-- Node.js (version X.X.X)
-- (Additional prerequisites, if any)
+- **React**: For building the user interface.
+- **Express**: To handle HTTP requests on the server side.
+- **Cors**: To enable CORS for cross-origin request handling.
+- **Body-parser**: To parse incoming request bodies in middleware.
+- **Axios**: For making HTTP requests from the frontend.
+- **OpenAI**: OpenAI's JavaScript SDK to interact with the OpenAI API.
 
-### Installation
+## Configuration
 
-1. Clone the repository:
-2. Install backend dependencies:
-cd ai-curatestore/backend
-pip install -r requirements.txt
+Ensure you have an API key from OpenAI. This key needs to be set in your environment variables as `OPENAI_API_KEY` to authenticate requests to OpenAI services.
 
-3. Install frontend dependencies:
-cd ../frontend
-npm install
+## Documentation
 
-4. Set up environment variables:
+For detailed information about the components and services used in this project, visit:
 
-Backend
-export OPENAI_API_KEY=your_openai_api_key
+- [React documentation](https://reactjs.org/)
+- [Node.js documentation](https://nodejs.org/en/docs/)
+- [OpenAI API documentation](https://beta.openai.com/docs/)
 
-Frontend
-export REACT_APP_API_BASE_URL=http://localhost:5000
+## Contributors
 
-5. Start the backend server:
-cd ../backend
-flask run
-6. Start the frontend development server:
-cd ../frontend
-npm start
-
-The application should now be running at `http://localhost:3000`.
-
-## Contributing
-
-Contributions are welcome! Please follow the guidelines in the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+List of contributors and their contact information.
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
-
-## Acknowledgements
-
-- [OpenAI](https://openai.com/) for providing the GPT models and API
-- (Additional acknowledgements, if any)
+Specify the license under which the project is available. Common licenses include MIT, GPL, and Apache.
