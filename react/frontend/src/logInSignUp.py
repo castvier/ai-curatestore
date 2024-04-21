@@ -12,6 +12,10 @@ client = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = client["UsersDatabase"]
 mycol = mydb["UserInfo"]
 
+if mycol.count_documents({}) == 0:
+    userInitialize = [{ "Username": "aflorCSUN", "Password": "123456",  "email": "aaron.flores.79@mycsun.edu"}]
+    mycol.insert_many(userInitialize)
+    
 # Check for uniqueness of username and email address
 def check_uniqueness(username, email):
     existing_user = mycol.find_one({'$or': [{'Username': username}, {'email': email}]})

@@ -4,50 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <script>
-        // Function to display a pop-up message
-        function displayMessage(message) {
-            alert(message);
+    <style>
+        body {
+            background-color: #072A6C; /* Blue background color */
+            color: #fff; /* White text color */
+            font-family: Arial, sans-serif; /* Optional: Change font family */
+            margin: 0; /* Remove default margins */
+            padding: 0; /* Remove default padding */
         }
-    </script>
+
+        /* Style for login form */
+        #loginSignupContent {
+            float: left; /* Float login/signup content to the left */
+			padding: 20px;
+			margin-top: 20px;
+            max-width: 400px; /* Set width to 50% to take up half of the page */
+            box-sizing: border-box; /* Include padding and border in width calculation */
+        }
+
+        /* Style for login form */
+        #loginForm {
+            background-color: #06066f; /* Darker blue color */
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px; /* Rounded corners */
+            margin-left: 20px; /* Add some left margin */
+            max-width: calc(100% - 40px); /* Limit form width */
+        }
+
+        /* Style for forms */
+        form {
+            background-color: #f2f2f2;
+            padding: 20px;
+            margin-top: 20px;
+            max-width: calc(100% - 40px); /* Limit form width */
+            margin-left: 20px; /* Add some left margin */
+            border-radius: 8px; /* Rounded corners */
+        }
+
+        /* Style for error messages */
+        .error-message {
+            color: red;
+        }
+
+        /* Style for disabled input fields */
+        input:disabled {
+            background-color: #ccc; /* Grey background color */
+        }
+
+        /* Style for landing page content */
+        #landingContent {
+            float: right; /* Float landing page content to the right */
+            width: 400px; /* Set width to 50% to take up half of the page */
+            padding: 20px;
+            box-sizing: border-box; /* Include padding and border in width calculation */
+            margin-top: 175px;
+            margin-bottom: 20px; /* Add some bottom margin */
+        }
+    </style>
 </head>
 <body>
-    <h1>Login</h1>
-    {% if error %}
-    <p style="color: red;">{{ error }}</p>
-    {% endif %}
-    <form id="loginForm" method="post" action="/login">
-        <label for="username">Username:</label><br>
-        <input type="text" id="username" name="username" required><br>
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" required><br>
-        <input type="submit" value="Login">
-    </form>
+    <div id="loginSignupContent">
+        <h1>Welcome Back Curator</h1>
+        {% if error %}
+        <p class="error-message">{{ error }}</p>
+        {% endif %}
+        <form id="loginForm" method="post" action="/login">
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username" required><br>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required><br>
+            <input type="submit" value="Login">
+        </form>
+        
+        <!-- Greyed-out box indicating signup is unavailable during beta phase -->
+        <div style="background-color: #06066f; padding: 20px; margin-top: 20px; border-radius: 8px; max-width: 400px; margin-left: 20px;">
+            <h2 style="color: #999;">Signup (Unavailable for beta phase)</h2>
+            <p style="color: #999;">Signup functionality is currently unavailable during the beta phase.</p>
+            <form id="signupForm" method="post" action="/signup">
+                <label for="username">Username:</label><br>
+                <input type="text" id="username" name="username" required disabled><br>
+                <label for="password">Password:</label><br>
+                <input type="password" id="password" name="password" required disabled><br>
+                <label for="email">Email:</label><br>
+                <input type="email" id="email" name="email" required disabled><br>
+                <input type="submit" value="Signup" onclick="displayMessage('Email verification code sent!');" disabled>
+            </form>
+        </div>
+    </div>
     
-    <h1>Signup</h1>
-    {% if signup_error %}
-    <p style="color: red;">{{ signup_error }}</p>
-    {% endif %}
-    <form id="signupForm" method="post" action="/signup">
-        <label for="username">Username:</label><br>
-        <input type="text" id="username" name="username" required><br>
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" required><br>
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" required><br>
-        <input type="submit" value="Signup" onclick="displayMessage('Email verification code sent!');">
-    </form>
-    
-    {% if verification_code %}
-    <h1>Verify Email</h1>
-    <form id="verifyForm" method="post" action="/verify">
-        <input type="hidden" name="username" value="{{ username }}">
-        <input type="hidden" name="password" value="{{ password }}">
-        <input type="hidden" name="email" value="{{ email }}">
-        <label for="verification_code">Verification Code:</label><br>
-        <input type="text" id="verification_code" name="verification_code" required><br>
-        <input type="submit" value="Verify">
-    </form>
-    {% endif %}
+    <!-- Landing page content -->
+    <div id="landingContent">
+        <h2>Introducing AI CurateStore</h2>
+        <p>A new platform that aims to transform the way AI, particularly GPT technology models, is utilized across various domains. The platform is designed with content creators, developers, and educators in mind, offering specialized modules for easier access to AI-driven solutions.</p>
+        <p>AI CurateStore focuses on simplifying AI usage while prioritizing security, usability, and educational value. The team behind the platform has set a one-month development timeline to bring this innovative solution to market.</p>
+        <p>The platform has the potential to streamline the integration of AI into various projects and workflows, making it an interesting development in the rapidly evolving AI landscape.</p>
+    </div>
 </body>
 </html>
