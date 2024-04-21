@@ -5,12 +5,22 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import secrets
-import re  # Import regular expressions module for email validation
+import re
+import datetime
+import logging
+from logging.handlers import RotatingFileHandler
 
 app = Flask(__name__)
 client = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = client["UsersDatabase"]
 mycol = mydb["UserInfo"]
+
+# Setup logging
+formatter = logging.Formatter('%(asctime)s - %(message)s')
+handler = RotatingFileHandler('login_attempts.log', maxBytes=10000, backupCount=1)
+handler.setFormatter(formatter)
+app.logger.addHandler(handler)
+app.logger.setLevel(logging.INFO)
 
 if mycol.count_documents({}) == 0:
     userInitialize = [{ "Username": "aflorCSUN", "Password": "123456",  "email": "aaron.flores.79@mycsun.edu"}]
@@ -64,8 +74,10 @@ def login():
     password = request.form['password']
     user = mycol.find_one({'Username': username, 'Password': password})
     if user:
+        app.logger.info(f"Successful login attempt for user '{username}' from IP address {request.remote_addr} at {datetime.datetime.now()}")
         return 'Login successful'
     else:
+        app.logger.info(f"Unsuccessful login attempt for user '{username}' from IP address {request.remote_addr} at {datetime.datetime.now()}")
         error_message = 'Invalid credentials. Please try again.'
         return render_template('index.html', error=error_message)
 
