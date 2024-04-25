@@ -14,6 +14,7 @@ app = Flask(__name__)
 client = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = client["UsersDatabase"]
 mycol = mydb["UserInfo"]
+mycol2 = mydb["LoginInfo"]
 
 # Setup logging
 formatter = logging.Formatter('%(asctime)s - %(message)s')
@@ -75,9 +76,11 @@ def login():
     user = mycol.find_one({'Username': username, 'Password': password})
     if user:
         app.logger.info(f"Successful login attempt for user '{username}' from IP address {request.remote_addr} at {datetime.datetime.now()}")
+        mycol2.insert_one({'UserName': username, 'IPAddress': request.remote_addr, 'Date': datetime.datetime.now(), 'Status': 'successful'})
         return 'Login successful'
     else:
         app.logger.info(f"Unsuccessful login attempt for user '{username}' from IP address {request.remote_addr} at {datetime.datetime.now()}")
+        mycol2.insert_one({'UserName': username, 'IPAddress': request.remote_addr, 'Date': datetime.datetime.now(), 'Status': 'unsuccessful'})
         error_message = 'Invalid credentials. Please try again.'
         return render_template('index.html', error=error_message)
 
