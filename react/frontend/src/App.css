@@ -117,7 +117,7 @@
 }
 
 .code-output {
-  background-color: #333;
+  background-color: #DAD1C2;
   color: #fff;
 }
 
@@ -138,4 +138,37 @@
 
 .App-header h1 {
   margin: 0;
+}
+
+.code-box {
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 20px;
+}
+
+.code-box pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: monospace;
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+  background-color: #f4f4f4;
+  padding: 10px;
+}
+
+.code-box code {
+  display: block;
+  font-family: monospace;
+}
+
+.code-box button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }

@@ -58,19 +58,19 @@ const App = () => {
 
   const handleCodeGeneration = async () => {
     if (!prompt) {
-      setError('Please enter a prompt for content generation.');
+      setError('Please enter a prompt for code generation.');
       return;
     }
-  
+
     setIsLoading(true);
     setError(null);
-  
+
     try {
-      const generatedContent = await generateContent(prompt, tone, length, audience);
-      setGeneratedContent(generatedContent.generated_content);
+      const generatedCode = await generateCode(prompt);
+      setGeneratedCode(generatedCode.generated_code);
     } catch (error) {
-      console.error('Error generating content:', error);
-      setError('Failed to generate content. Please try again.');
+      console.error('Error generating code:', error);
+      setError('Failed to generate code. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -81,10 +81,10 @@ const App = () => {
       setError('Please enter a prompt for educational content generation.');
       return;
     }
-  
+
     setIsLoading(true);
     setError(null);
-  
+
     try {
       const generatedContent = await generateEducationalContent(prompt, difficulty, subject, format);
       setGeneratedEducationalContent(generatedContent.generated_educational_content);
@@ -104,6 +104,13 @@ const App = () => {
     } else if (activeModule === 'educational') {
       handleEducationalContentGeneration();
     }
+  };
+
+  const handleCodeCopy = () => {
+    const codeElement = document.querySelector('.code-box .language-python');
+    const code = codeElement.innerText;
+    navigator.clipboard.writeText(code);
+    alert('Code copied to clipboard!');
   };
 
   return (
@@ -133,7 +140,12 @@ const App = () => {
           <h2 onClick={() => handleModuleClick('code')}>Code Generation</h2>
           {activeModule === 'code' && (
             <div className="customization-container">
-              <CodeGenerator prompt={prompt} setPrompt={setPrompt} />
+              <CodeGenerator
+                prompt={prompt}
+                setPrompt={setPrompt}
+                generatedCode={generatedCode}
+                onCopy={handleCodeCopy}
+              />
             </div>
           )}
         </section>
@@ -155,7 +167,7 @@ const App = () => {
           )}
         </section>
       </div>
-      <main>
+        <main>
         <div className="prompt-container">
           <textarea
             className="prompt-input"
@@ -177,7 +189,12 @@ const App = () => {
         {generatedCode && (
           <div className="output-container code-output">
             <h3>Generated Code:</h3>
-            <pre>{generatedCode}</pre>
+            <div className="code-box">
+              <pre>
+                <code className="language-python">{generatedCode}</code>
+              </pre>
+              <button onClick={handleCodeCopy}>Copy Code</button>
+            </div>
           </div>
         )}
         {generatedEducationalContent && (
