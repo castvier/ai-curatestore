@@ -2,37 +2,65 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  padding: 20px;
 }
 
-.App-link {
-  color: #61dafb;
+.modules-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 2px solid #DAD1C2;
+  border-radius: 5px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.module-compartment {
+  flex: 1;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.module-compartment h2 {
+  display: inline-block;
+  padding-bottom: 5px;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.module-compartment.active h2 {
+  border-color: #FFA80A;
+}
+
+.prompt-container {
+  margin-top: 20px;
+}
+
+.prompt-input {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.App-header {
+  background-color: #FFF8EB;
+  min-height: 10vh;
+  display: flex;
+  align-items: flex-start; /* Updated to align items to the start (top left) */
+  font-size: calc(1px + 1vmin);
+  color: #3B3533;
+  padding: 20px;
+}
+
+.App-header h1 {
+  margin: 0; /* Remove default margin */
 }

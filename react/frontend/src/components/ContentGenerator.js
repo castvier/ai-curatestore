@@ -2,22 +2,21 @@ import React, { useState } from 'react';
 import { generateContent } from '../api/contentApi';
 import '../styles/styles.css';
 
-const ContentGenerator = () => {
-  const [prompt, setPrompt] = useState('');
+const ContentGenerator = ({ prompt }) => {
   const [tone, setTone] = useState('Neutral');
+  const [length, setLength] = useState('Medium');
+  const [audience, setAudience] = useState('General');
   const [generatedContent, setGeneratedContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const toneOptions = ['Neutral', 'Formal', 'Informal', 'Persuasive', 'Enthusiastic'];
+  const lengthOptions = ['Short', 'Medium', 'Long'];
+  const audienceOptions = ['General', 'Technical', 'Business', 'Creative'];
 
-  const handlePromptChange = (e) => {
-    setPrompt(e.target.value);
-  };
-
-  const handleToneChange = (e) => {
-    setTone(e.target.value);
-  };
+  const handleToneChange = (e) => setTone(e.target.value);
+  const handleLengthChange = (e) => setLength(e.target.value);
+  const handleAudienceChange = (e) => setAudience(e.target.value);
 
   const handleContentGeneration = async () => {
     if (!prompt) {
@@ -25,18 +24,11 @@ const ContentGenerator = () => {
       return;
     }
 
-    // Check if the prompt is related to content generation
-    const isRelatedToContentGeneration = !/code|program|algorithm|function|class|method/i.test(prompt);
-    if (!isRelatedToContentGeneration) {
-      setError('The prompt should be related to content generation, not code. Please try again.');
-      return;
-    }
-
     setIsLoading(true);
     setError(null);
 
     try {
-      const generatedContent = await generateContent(prompt, tone);
+      const generatedContent = await generateContent(prompt, tone, length, audience);
       setGeneratedContent(generatedContent.generated_content);
     } catch (error) {
       console.error('Error generating content:', error);
@@ -48,22 +40,28 @@ const ContentGenerator = () => {
 
   return (
     <div className="component">
-      <h2>Content Generator</h2>
       <div>
-        <label htmlFor="prompt">Prompt:</label>
-        <input
-          type="text"
-          id="prompt"
-          value={prompt}
-          onChange={handlePromptChange}
-          placeholder="Enter your prompt for content generation..."
-        />
         <label htmlFor="tone">Tone:</label>
         <select id="tone" value={tone} onChange={handleToneChange}>
           {toneOptions.map((tone) => (
             <option key={tone} value={tone}>{tone}</option>
           ))}
         </select>
+
+        <label htmlFor="length">Length:</label>
+        <select id="length" value={length} onChange={handleLengthChange}>
+          {lengthOptions.map((length) => (
+            <option key={length} value={length}>{length}</option>
+          ))}
+        </select>
+
+        <label htmlFor="audience">Audience:</label>
+        <select id="audience" value={audience} onChange={handleAudienceChange}>
+          {audienceOptions.map((audience) => (
+            <option key={audience} value={audience}>{audience}</option>
+          ))}
+        </select>
+
         <button onClick={handleContentGeneration} disabled={isLoading}>
           {isLoading ? 'Generating...' : 'Generate Content'}
         </button>

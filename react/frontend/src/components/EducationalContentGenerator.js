@@ -2,18 +2,21 @@ import React, { useState } from 'react';
 import { generateEducationalContent } from '../api/educationalContentApi';
 import '../styles/styles.css';
 
-const difficultyLevels = ['Easy', 'Medium', 'Hard'];
-
-const EducationalContentGenerator = () => {
-  const [prompt, setPrompt] = useState('');
-  const [difficulty, setDifficulty] = useState(difficultyLevels[0]);
+const EducationalContentGenerator = ({ prompt }) => {
+  const [difficulty, setDifficulty] = useState('Easy');
+  const [subject, setSubject] = useState('General');
+  const [format, setFormat] = useState('Article');
   const [generatedContent, setGeneratedContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handlePromptChange = (e) => setPrompt(e.target.value);
+  const difficultyOptions = ['Easy', 'Intermediate', 'Advanced'];
+  const subjectOptions = ['General', 'Mathematics', 'Science', 'History', 'Literature'];
+  const formatOptions = ['Article', 'Lesson Plan', 'Quiz', 'Infographic'];
 
   const handleDifficultyChange = (e) => setDifficulty(e.target.value);
+  const handleSubjectChange = (e) => setSubject(e.target.value);
+  const handleFormatChange = (e) => setFormat(e.target.value);
 
   const handleContentGeneration = async () => {
     if (!prompt) {
@@ -21,18 +24,11 @@ const EducationalContentGenerator = () => {
       return;
     }
 
-    // Check if the prompt is related to educational content generation
-    const isRelatedToEducationalContentGeneration = !/code|program|algorithm|function|class|method/i.test(prompt);
-    if (!isRelatedToEducationalContentGeneration) {
-      setError('The prompt should be related to educational content generation, not code. Please try again.');
-      return;
-    }
-
     setIsLoading(true);
     setError(null);
 
     try {
-      const generatedContent = await generateEducationalContent(prompt, difficulty);
+      const generatedContent = await generateEducationalContent(prompt, difficulty, subject, format);
       setGeneratedContent(generatedContent.generated_educational_content);
     } catch (error) {
       console.error('Error generating educational content:', error);
@@ -44,22 +40,28 @@ const EducationalContentGenerator = () => {
 
   return (
     <div className="component">
-      <h3>Educational Content Generator</h3>
       <div>
-        <label htmlFor="prompt">Prompt:</label>
-        <input
-          type="text"
-          id="prompt"
-          value={prompt}
-          onChange={handlePromptChange}
-          placeholder="Enter your prompt for educational content..."
-        />
         <label htmlFor="difficulty">Difficulty:</label>
         <select id="difficulty" value={difficulty} onChange={handleDifficultyChange}>
-          {difficultyLevels.map(level => (
+          {difficultyOptions.map(level => (
             <option key={level} value={level}>{level}</option>
           ))}
         </select>
+
+        <label htmlFor="subject">Subject:</label>
+        <select id="subject" value={subject} onChange={handleSubjectChange}>
+          {subjectOptions.map(subject => (
+            <option key={subject} value={subject}>{subject}</option>
+          ))}
+        </select>
+
+        <label htmlFor="format">Format:</label>
+        <select id="format" value={format} onChange={handleFormatChange}>
+          {formatOptions.map(format => (
+            <option key={format} value={format}>{format}</option>
+          ))}
+        </select>
+
         <button onClick={handleContentGeneration} disabled={isLoading}>
           {isLoading ? 'Generating...' : 'Generate Educational Content'}
         </button>
