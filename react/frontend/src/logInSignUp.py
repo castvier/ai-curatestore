@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import pymongo
 from pymongo import MongoClient
 import smtplib
@@ -9,8 +9,11 @@ import re
 import datetime
 import logging
 from logging.handlers import RotatingFileHandler
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}) # Allow all origins (for development)
 client = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = client["UsersDatabase"]
 mycol = mydb["UserInfo"]
@@ -24,7 +27,7 @@ app.logger.addHandler(handler)
 app.logger.setLevel(logging.INFO)
 
 if mycol.count_documents({}) == 0:
-    userInitialize = [{ "Username": "aflorCSUN", "Password": "123456",  "email": "aaron.flores.79@mycsun.edu"}]
+    userInitialize = [{"Username": "aflorCSUN", "Password": "123456", "email": "aaron.flores.79@mycsun.edu"}]
     mycol.insert_many(userInitialize)
     
 # Check for uniqueness of username and email address
@@ -71,18 +74,25 @@ def index():
 
 @app.route('/login', methods=['POST'])
 def login():
-    username = request.form['username']
-    password = request.form['password']
-    user = mycol.find_one({'Username': username, 'Password': password})
+    app.config['JSON_SORT_KEYS'] = False
+    username = request.json.get('username')
+    password = request.json.get('password')
+    print(f"Received username: {username}, password: {password}")  # Add this line
+    if username is None or password is None:
+        print("Username or password is missing in the request")
+        error_message = 'Invalid credentials. Please try again.'
+        return jsonify({'success': False, 'error': error_message})
+
+    user = mycol.find_one({'Username': re.compile(f'^{username}$', re.IGNORECASE), 'Password': password})
     if user:
         app.logger.info(f"Successful login attempt for user '{username}' from IP address {request.remote_addr} at {datetime.datetime.now()}")
         mycol2.insert_one({'UserName': username, 'IPAddress': request.remote_addr, 'Date': datetime.datetime.now(), 'Status': 'successful'})
-        return 'Login successful'
+        return jsonify({'success': True, 'message': 'Login successful'})
     else:
         app.logger.info(f"Unsuccessful login attempt for user '{username}' from IP address {request.remote_addr} at {datetime.datetime.now()}")
         mycol2.insert_one({'UserName': username, 'IPAddress': request.remote_addr, 'Date': datetime.datetime.now(), 'Status': 'unsuccessful'})
         error_message = 'Invalid credentials. Please try again.'
-        return render_template('index.html', error=error_message)
+        return jsonify({'success': False, 'error': error_message})
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():

@@ -6,6 +6,7 @@ import { generateEducationalContent } from './api/educationalContentApi';
 import ContentGenerator from './components/ContentGenerator';
 import CodeGenerator from './components/CodeGenerator';
 import EducationalContentGenerator from './components/EducationalContentGenerator';
+import LoginPage from './components/LoginPage';
 import './App.css';
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
   const [generatedEducationalContent, setGeneratedEducationalContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [tone, setTone] = useState('Neutral');
   const [length, setLength] = useState('Medium');
@@ -113,97 +115,107 @@ const App = () => {
     alert('Code copied to clipboard!');
   };
 
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>AI CurateStore</h1>
-      </header>
-      <div className="modules-container">
-        <section className={`module-compartment ${activeModule === 'content' ? 'active' : ''}`}>
-          <h2 onClick={() => handleModuleClick('content')}>Content Generation</h2>
-          {activeModule === 'content' && (
-            <div className="customization-container">
-              <ContentGenerator
-                prompt={prompt}
-                setPrompt={setPrompt}
-                tone={tone}
-                setTone={setTone}
-                length={length}
-                setLength={setLength}
-                audience={audience}
-                setAudience={setAudience}
-              />
-            </div>
-          )}
-        </section>
-        <section className={`module-compartment ${activeModule === 'code' ? 'active' : ''}`}>
-          <h2 onClick={() => handleModuleClick('code')}>Code Generation</h2>
-          {activeModule === 'code' && (
-            <div className="customization-container">
-              <CodeGenerator
-                prompt={prompt}
-                setPrompt={setPrompt}
-                generatedCode={generatedCode}
-                onCopy={handleCodeCopy}
-              />
-            </div>
-          )}
-        </section>
-        <section className={`module-compartment ${activeModule === 'educational' ? 'active' : ''}`}>
-          <h2 onClick={() => handleModuleClick('educational')}>Educational Content Generation</h2>
-          {activeModule === 'educational' && (
-            <div className="customization-container">
-              <EducationalContentGenerator
-                prompt={prompt}
-                setPrompt={setPrompt}
-                difficulty={difficulty}
-                setDifficulty={setDifficulty}
-                subject={subject}
-                setSubject={setSubject}
-                format={format}
-                setFormat={setFormat}
-              />
-            </div>
-          )}
-        </section>
-      </div>
-        <main>
-        <div className="prompt-container">
-          <textarea
-            className="prompt-input"
-            value={prompt}
-            onChange={handlePromptChange}
-            placeholder="Enter your prompt here..."
-          />
-          <button className="generate-button" onClick={handleGeneration} disabled={isLoading}>
-            {isLoading ? 'Generating...' : <FaArrowRight />}
-          </button>
-        </div>
-        {error && <p className="error">{error}</p>}
-        {generatedContent && (
-          <div className="output-container">
-            <h3>Generated Content:</h3>
-            <p>{generatedContent}</p>
+      {!isLoggedIn ? (
+        <LoginPage onLogin={handleLogin} />
+      ) : (
+        <>
+          <header className="App-header">
+            <h1>AI CurateStore</h1>
+          </header>
+          <div className="modules-container">
+            <section className={`module-compartment ${activeModule === 'content' ? 'active' : ''}`}>
+              <h2 onClick={() => handleModuleClick('content')}>Content Generation</h2>
+              {activeModule === 'content' && (
+                <div className="customization-container">
+                  <ContentGenerator
+                    prompt={prompt}
+                    setPrompt={setPrompt}
+                    tone={tone}
+                    setTone={setTone}
+                    length={length}
+                    setLength={setLength}
+                    audience={audience}
+                    setAudience={setAudience}
+                  />
+                </div>
+              )}
+            </section>
+            <section className={`module-compartment ${activeModule === 'code' ? 'active' : ''}`}>
+              <h2 onClick={() => handleModuleClick('code')}>Code Generation</h2>
+              {activeModule === 'code' && (
+                <div className="customization-container">
+                  <CodeGenerator
+                    prompt={prompt}
+                    setPrompt={setPrompt}
+                    generatedCode={generatedCode}
+                    onCopy={handleCodeCopy}
+                  />
+                </div>
+              )}
+            </section>
+            <section className={`module-compartment ${activeModule === 'educational' ? 'active' : ''}`}>
+              <h2 onClick={() => handleModuleClick('educational')}>Educational Content Generation</h2>
+              {activeModule === 'educational' && (
+                <div className="customization-container">
+                  <EducationalContentGenerator
+                    prompt={prompt}
+                    setPrompt={setPrompt}
+                    difficulty={difficulty}
+                    setDifficulty={setDifficulty}
+                    subject={subject}
+                    setSubject={setSubject}
+                    format={format}
+                    setFormat={setFormat}
+                  />
+                </div>
+              )}
+            </section>
           </div>
-        )}
-        {generatedCode && (
-          <div className="output-container code-output">
-            <h3>Generated Code:</h3>
-            <div className="code-box">
-              <pre>
-                <code className="language-python">{generatedCode}</code>
-              </pre>
-              <button onClick={handleCodeCopy}>Copy Code</button>
+          <main>
+            <div className="prompt-container">
+              <textarea
+                className="prompt-input"
+                value={prompt}
+                onChange={handlePromptChange}
+                placeholder="Enter your prompt here..."
+              />
+              <button className="generate-button" onClick={handleGeneration} disabled={isLoading}>
+                {isLoading ? 'Generating...' : <FaArrowRight />}
+              </button>
             </div>
-          </div>
-        )}
-        {generatedEducationalContent && (
-          <div className="output-container">
-            <h3>Generated Educational Content:</h3>
-            <p>{generatedEducationalContent}</p>
-          </div>
-        )}
-      </main>
+            {error && <p className="error">{error}</p>}
+            {generatedContent && (
+              <div className="output-container">
+                <h3>Generated Content:</h3>
+                <p>{generatedContent}</p>
+              </div>
+            )}
+            {generatedCode && (
+              <div className="output-container code-output">
+                <h3>Generated Code:</h3>
+                <div className="code-box">
+                  <pre>
+                    <code className="language-python">{generatedCode}</code>
+                  </pre>
+                  <button onClick={handleCodeCopy}>Copy Code</button>
+                </div>
+              </div>
+            )}
+            {generatedEducationalContent && (
+              <div className="output-container">
+                <h3>Generated Educational Content:</h3>
+                <p>{generatedEducationalContent}</p>
+              </div>
+            )}
+          </main>
+        </>
+      )}
     </div>
   );
 };
