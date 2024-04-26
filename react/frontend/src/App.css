@@ -16,17 +16,20 @@
 
 .modules-container {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
+  justify-content: center;
+  margin: 150px auto 20px;
+  max-width: 1150px;
   padding: 20px;
   border: 2px solid #DAD1C2;
   border-radius: 5px;
 }
 
 .module-compartment {
-  flex: 1;
   padding: 10px;
   cursor: pointer;
+  margin: 0 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 .module-compartment h2 {
@@ -40,27 +43,99 @@
   border-color: #FFA80A;
 }
 
+.customization-container {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.customization-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.customization-feature {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.customization-feature label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.customization-select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
 .prompt-container {
   margin-top: 20px;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 .prompt-input {
   width: 100%;
   height: 100px;
-  padding: 10px;
+  padding: 10px 40px 10px 10px;
   font-size: 16px;
+  box-sizing: border-box;
+}
+
+.generate-button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 8px 16px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.generate-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.output-container {
+  background-color: #f5f5f5;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 5px;
+  text-align: left;
+}
+
+.code-output {
+  background-color: #333;
+  color: #fff;
+}
+
+.code-output pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .App-header {
   background-color: #FFF8EB;
   min-height: 10vh;
   display: flex;
-  align-items: flex-start; /* Updated to align items to the start (top left) */
+  align-items: flex-start;
   font-size: calc(1px + 1vmin);
   color: #3B3533;
   padding: 20px;
 }
 
 .App-header h1 {
-  margin: 0; /* Remove default margin */
+  margin: 0;
 }

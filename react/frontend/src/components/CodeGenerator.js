@@ -1,46 +1,10 @@
-import React, { useState } from 'react';
-import { generateCode } from '../api/codeApi';
+import React from 'react';
 import './CodeGenerator.css';
 
-const CodeGenerator = ({ prompt }) => {
-  const [generatedCode, setGeneratedCode] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const handleCodeGeneration = async () => {
-    if (!prompt) {
-      setError('Please enter a prompt for code generation.');
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-    setGeneratedCode('');
-
-    try {
-      const response = await generateCode(prompt);
-      setGeneratedCode(response.generated_code);
-    } catch (error) {
-      console.error('Code generation error:', error);
-      setError('Failed to generate code. Please try again later.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+const CodeGenerator = ({ prompt, setPrompt }) => {
   return (
     <div className="generator-container">
-      <button
-        className="generator-button"
-        onClick={handleCodeGeneration}
-        disabled={isLoading}
-      >
-        {isLoading ? 'Generating...' : 'Generate Code'}
-      </button>
-      {error && <p className="error">{error}</p>}
-      {generatedCode && (
-        <pre className="generator-output">{generatedCode}</pre>
-      )}
+      {/* Add customization options for code generation here */}
     </div>
   );
 };
