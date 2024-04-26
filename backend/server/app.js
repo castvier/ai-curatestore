@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
 const OpenAI = require('openai');
 
 const app = express();
@@ -11,10 +14,54 @@ app.use(cors({
 }));
 app.use(bodyParser.json());
 
+// MongoDB Connection
+mongoose.connect('mongodb://localhost:27017/UsersDatabase', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => console.log('MongoDB connected'))
+  .catch(err => console.log('MongoDB connection error:', err));
+
+// User model
+const User = mongoose.model('UserInfo', new mongoose.Schema({
+  username: String,
+  password: String,
+  email: String
+}));
+
 // Configure OpenAI client
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
+
+// Authentication Routes
+app.post('/signup', async (req, res) => {
+  const { username, password, email } = req.body;
+
+  const userExists = await User.findOne({ $or: [{ username }, { email }] });
+  if (userExists) {
+    return res.status(400).send('Username or email already exists');
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 12);
+  const newUser = new User({ username, password: hashedPassword, email });
+  await newUser.save();
+  res.send('Signup successful');
+});
+
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  const user = await User.findOne({ username });
+
+  if (user && await bcrypt.compare(password, user.password)) {
+    res.send('Login successful');
+  } else {
+    console.log("password: ", await bcrypt.hash(password, 12));
+    res.status(401).send('Invalid credentials');
+  }
+});
+
+// Existing OpenAI Integration
+// Place other existing OpenAI routes here...
 
 async function generateContent(prompt, tone) {
   try {
@@ -126,6 +173,7 @@ app.post('/api/generate_educational_content', async (req, res) => {
   }
 });
 
+// Start server
 const port = process.env.PORT || 8020;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
