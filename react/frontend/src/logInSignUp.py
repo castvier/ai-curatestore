@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
+import flask_bcrypt
 import pymongo
 from pymongo import MongoClient
 import smtplib
@@ -24,9 +25,13 @@ app.logger.addHandler(handler)
 app.logger.setLevel(logging.INFO)
 
 if mycol.count_documents({}) == 0:
-    userInitialize = [{ "Username": "aflorCSUN", "Password": "123456",  "email": "aaron.flores.79@mycsun.edu"}]
+    hashed_password = flask_bcrypt.generate_password_hash('123456').decode('utf-8')
+    is_valid = flask_bcrypt.check_password_hash(hashed_password, '123456')
+    print(f'hashed: {hashed_password}')
+    print(f'is_valid: {is_valid}')
+    userInitialize = [{ "Username": "aflorCSUN", "Password": hashed_password,  "email": "aaron.flores.79@mycsun.edu"}]
     mycol.insert_many(userInitialize)
-    
+
 # Check for uniqueness of username and email address
 def check_uniqueness(username, email):
     existing_user = mycol.find_one({'$or': [{'Username': username}, {'email': email}]})
@@ -73,8 +78,9 @@ def index():
 def login():
     username = request.form['username']
     password = request.form['password']
-    user = mycol.find_one({'Username': username, 'Password': password})
-    if user:
+    user = mycol.find_one({'Username': username})
+    pass_valid = flask_bcrypt.check_password_hash(user.get('Password'), password)
+    if user and pass_valid:
         app.logger.info(f"Successful login attempt for user '{username}' from IP address {request.remote_addr} at {datetime.datetime.now()}")
         mycol2.insert_one({'UserName': username, 'IPAddress': request.remote_addr, 'Date': datetime.datetime.now(), 'Status': 'successful'})
         return 'Login successful'
@@ -90,12 +96,12 @@ def signup():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-        
+
         # Check if username and email are unique
         if not check_uniqueness(username, email):
             error_message = 'Username or email already exists. Please choose another.'
             return render_template('loginSignup.html', signup_error=error_message)
-        
+
         # Validate email format
         if not validate_email(email):
             error_message = 'Invalid email format. Please enter a valid email address.'
