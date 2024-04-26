@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function LoginForm() {
+function LoginForm({ onLoginSuccess }) {  // Accept onLoginSuccess as a prop
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -11,6 +11,7 @@ function LoginForm() {
     try {
       const response = await axios.post('http://localhost:8020/login', { username, password });
       alert('Login successful!');
+      onLoginSuccess();  // Call onLoginSuccess to update the App's state
       setUsername('');
       setPassword('');
     } catch (err) {
