@@ -58,19 +58,19 @@ const App = () => {
 
   const handleCodeGeneration = async () => {
     if (!prompt) {
-      setError('Please enter a prompt for code generation.');
+      setError('Please enter a prompt for content generation.');
       return;
     }
-
+  
     setIsLoading(true);
     setError(null);
-
+  
     try {
-      const response = await generateCode(prompt);
-      setGeneratedCode(response.generated_code);
+      const generatedContent = await generateContent(prompt, tone, length, audience);
+      setGeneratedContent(generatedContent.generated_content);
     } catch (error) {
-      console.error('Code generation error:', error);
-      setError('Failed to generate code. Please try again later.');
+      console.error('Error generating content:', error);
+      setError('Failed to generate content. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -81,10 +81,10 @@ const App = () => {
       setError('Please enter a prompt for educational content generation.');
       return;
     }
-
+  
     setIsLoading(true);
     setError(null);
-
+  
     try {
       const generatedContent = await generateEducationalContent(prompt, difficulty, subject, format);
       setGeneratedEducationalContent(generatedContent.generated_educational_content);

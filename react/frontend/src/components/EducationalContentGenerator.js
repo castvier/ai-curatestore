@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/styles.css';
 
-const EducationalContentGenerator = ({ prompt, setPrompt, difficulty, setDifficulty, subject, setSubject, format, setFormat }) => {
+const EducationalContentGenerator = ({ prompt, setPrompt, difficulty, setDifficulty, subject, setSubject, format, setFormat, generatedEducationalContent }) => {
   const difficultyOptions = ['Easy', 'Intermediate', 'Advanced'];
   const subjectOptions = ['General', 'Mathematics', 'Science', 'History', 'Literature'];
   const formatOptions = ['Article', 'Lesson Plan', 'Quiz', 'Infographic'];
@@ -44,6 +44,12 @@ const EducationalContentGenerator = ({ prompt, setPrompt, difficulty, setDifficu
           </select>
         </div>
       </div>
+      {generatedEducationalContent && (
+        <div>
+          <h4>Generated Educational Content:</h4>
+          <p>{generatedEducationalContent}</p>
+        </div>
+      )}
     </div>
   );
 };
