@@ -67,7 +67,7 @@ def send_verification_email(email, verification_code):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('loginSignup.html')
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -82,7 +82,7 @@ def login():
         app.logger.info(f"Unsuccessful login attempt for user '{username}' from IP address {request.remote_addr} at {datetime.datetime.now()}")
         mycol2.insert_one({'UserName': username, 'IPAddress': request.remote_addr, 'Date': datetime.datetime.now(), 'Status': 'unsuccessful'})
         error_message = 'Invalid credentials. Please try again.'
-        return render_template('index.html', error=error_message)
+        return render_template('loginSignup.html', error=error_message)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -94,21 +94,21 @@ def signup():
         # Check if username and email are unique
         if not check_uniqueness(username, email):
             error_message = 'Username or email already exists. Please choose another.'
-            return render_template('index.html', signup_error=error_message)
+            return render_template('loginSignup.html', signup_error=error_message)
         
         # Validate email format
         if not validate_email(email):
             error_message = 'Invalid email format. Please enter a valid email address.'
-            return render_template('index.html', signup_error=error_message)
+            return render_template('loginSignup.html', signup_error=error_message)
 
         verification_code = secrets.token_hex(4)  # Generate a random verification code
         if send_verification_email(email, verification_code):
-            return render_template('index.html', message='Email verification code sent!')
+            return render_template('loginSignup.html', message='Email verification code sent!')
         else:
             error_message = 'Failed to send verification email. Please try again later.'
-            return render_template('index.html', signup_error=error_message)
+            return render_template('loginSignup.html', signup_error=error_message)
     else:
-        return render_template('index.html')
+        return render_template('loginSignup.html')
 
 @app.route('/verify', methods=['POST'])
 def verify():
@@ -121,7 +121,7 @@ def verify():
         return redirect(url_for('index'))
     else:
         error_message = 'Invalid verification code. Please try again.'
-        return render_template('index.html', signup_error=error_message)
+        return render_template('loginSignup.html', signup_error=error_message)
 
 if __name__ == '__main__':
     app.run(debug=True)
