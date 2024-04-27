@@ -60,22 +60,20 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Existing OpenAI Integration
-// Place other existing OpenAI routes here...
+// OpenAI Integration
+async function generateContent(prompt, tone, length, audience) {
+  const lengthPrefixMap = {
+    Short: "Keep it brief: ",
+    Medium: "Provide a moderate level of detail: ",
+    Long: "Go into extensive detail: ",
+  };
+  const lengthPrefix = lengthPrefixMap[length] || "Provide a moderate level of detail: ";
 
-async function generateContent(prompt, tone) {
+  const audiencePrefix = `Target audience: ${audience}. `;
+
+  const modifiedPrompt = `Tone: ${tone}\n${lengthPrefix}${audiencePrefix}${prompt}`;
+
   try {
-    const lengthPrefixMap = {
-      Short: "Keep it brief: ",
-      Medium: "Provide a moderate level of detail: ",
-      Long: "Go into extensive detail: ",
-    };
-    const lengthPrefix = lengthPrefixMap[length] || "Provide a moderate level of detail: ";
-
-    const audiencePrefix = `Target audience: ${audience}. `;
-
-    const modifiedPrompt = `Tone: ${tone}\n${lengthPrefix}${audiencePrefix}${prompt}`;
-
     const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [{ role: 'user', content: modifiedPrompt }],
@@ -96,6 +94,7 @@ async function generateContent(prompt, tone) {
     throw new Error('An error occurred while generating content');
   }
 }
+
 async function generateCode(prompt) {
   try {
     const response = await openai.chat.completions.create({
