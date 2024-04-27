@@ -1,75 +1,53 @@
-import React, { useState } from 'react';
-import { generateEducationalContent } from '../api/educationalContentApi';
+import React from 'react';
 import '../styles/styles.css';
 
-const difficultyLevels = ['Easy', 'Medium', 'Hard'];
-
-const EducationalContentGenerator = () => {
-  const [prompt, setPrompt] = useState('');
-  const [difficulty, setDifficulty] = useState(difficultyLevels[0]);
-  const [generatedContent, setGeneratedContent] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const handlePromptChange = (e) => setPrompt(e.target.value);
+const EducationalContentGenerator = ({ prompt, setPrompt, difficulty, setDifficulty, subject, setSubject, format, setFormat, generatedEducationalContent }) => {
+  const difficultyOptions = ['Easy', 'Intermediate', 'Advanced'];
+  const subjectOptions = ['General', 'Mathematics', 'Science', 'History', 'Literature'];
+  const formatOptions = ['Article', 'Lesson Plan', 'Quiz', 'Infographic'];
 
   const handleDifficultyChange = (e) => setDifficulty(e.target.value);
-
-  const handleContentGeneration = async () => {
-    if (!prompt) {
-      setError('Please enter a prompt for educational content generation.');
-      return;
-    }
-
-    // Check if the prompt is related to educational content generation
-    const isRelatedToEducationalContentGeneration = !/code|program|algorithm|function|class|method/i.test(prompt);
-    if (!isRelatedToEducationalContentGeneration) {
-      setError('The prompt should be related to educational content generation, not code. Please try again.');
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const generatedContent = await generateEducationalContent(prompt, difficulty);
-      setGeneratedContent(generatedContent.generated_educational_content);
-    } catch (error) {
-      console.error('Error generating educational content:', error);
-      setError('Failed to generate educational content. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const handleSubjectChange = (e) => setSubject(e.target.value);
+  const handleFormatChange = (e) => setFormat(e.target.value);
 
   return (
     <div className="component">
-      <h3>Educational Content Generator</h3>
-      <div>
-        <label htmlFor="prompt">Prompt:</label>
-        <input
-          type="text"
-          id="prompt"
-          value={prompt}
-          onChange={handlePromptChange}
-          placeholder="Enter your prompt for educational content..."
-        />
-        <label htmlFor="difficulty">Difficulty:</label>
-        <select id="difficulty" value={difficulty} onChange={handleDifficultyChange}>
-          {difficultyLevels.map(level => (
-            <option key={level} value={level}>{level}</option>
-          ))}
-        </select>
-        <button onClick={handleContentGeneration} disabled={isLoading}>
-          {isLoading ? 'Generating...' : 'Generate Educational Content'}
-        </button>
+      <div className="customization-options">
+        <div className="customization-feature">
+          <label htmlFor="difficulty">Difficulty:</label>
+          <select id="difficulty" value={difficulty} onChange={handleDifficultyChange} className="customization-select">
+            {difficultyOptions.map((level) => (
+              <option key={level} value={level}>
+                {level}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="customization-feature">
+          <label htmlFor="subject">Subject:</label>
+          <select id="subject" value={subject} onChange={handleSubjectChange} className="customization-select">
+            {subjectOptions.map((subject) => (
+              <option key={subject} value={subject}>
+                {subject}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="customization-feature">
+          <label htmlFor="format">Format:</label>
+          <select id="format" value={format} onChange={handleFormatChange} className="customization-select">
+            {formatOptions.map((format) => (
+              <option key={format} value={format}>
+                {format}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
-      {isLoading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
-      {generatedContent && (
+      {generatedEducationalContent && (
         <div>
           <h4>Generated Educational Content:</h4>
-          <p>{generatedContent}</p>
+          <p>{generatedEducationalContent}</p>
         </div>
       )}
     </div>

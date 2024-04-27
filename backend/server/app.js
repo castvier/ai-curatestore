@@ -65,9 +65,20 @@ app.post('/login', async (req, res) => {
 
 async function generateContent(prompt, tone) {
   try {
+    const lengthPrefixMap = {
+      Short: "Keep it brief: ",
+      Medium: "Provide a moderate level of detail: ",
+      Long: "Go into extensive detail: ",
+    };
+    const lengthPrefix = lengthPrefixMap[length] || "Provide a moderate level of detail: ";
+
+    const audiencePrefix = `Target audience: ${audience}. `;
+
+    const modifiedPrompt = `Tone: ${tone}\n${lengthPrefix}${audiencePrefix}${prompt}`;
+
     const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: `Tone: ${tone}\n${prompt}` }],
+      messages: [{ role: 'user', content: modifiedPrompt }],
       max_tokens: 1024,
       temperature: 0.5,
     });
@@ -85,7 +96,6 @@ async function generateContent(prompt, tone) {
     throw new Error('An error occurred while generating content');
   }
 }
-
 async function generateCode(prompt) {
   try {
     const response = await openai.chat.completions.create({
@@ -109,14 +119,16 @@ async function generateCode(prompt) {
   }
 }
 
-async function generateEducationalContent(prompt, difficulty) {
+async function generateEducationalContent(prompt, difficulty, subject, format) {
   const difficultyPrefixMap = {
     Easy: "Explain like I'm five: ",
-    Medium: "Explain like I'm a high school student: ",
-    Hard: "Explain like I'm a graduate student specializing in the subject: ",
+    Intermediate: "Explain like I'm a high school student: ",
+    Advanced: "Explain like I'm a graduate student specializing in the subject: ",
   };
   const difficultyPrefix = difficultyPrefixMap[difficulty] || "Explain like I'm five: ";
-  const modifiedPrompt = difficultyPrefix + prompt;
+  const subjectPrefix = `Subject: ${subject}. `;
+  const formatPrefix = `Format: ${format}. `;
+  const modifiedPrompt = difficultyPrefix + subjectPrefix + formatPrefix + prompt;
 
   try {
     const response = await openai.chat.completions.create({
@@ -142,8 +154,8 @@ async function generateEducationalContent(prompt, difficulty) {
 
 app.post('/api/generate_content', async (req, res) => {
   try {
-    const { prompt, tone } = req.body;
-    const { generated_content } = await generateContent(prompt, tone);
+    const { prompt, tone, length, audience } = req.body;
+    const { generated_content } = await generateContent(prompt, tone, length, audience);
     res.json({ generated_content });
   } catch (error) {
     console.error('An error occurred while generating content:', error.message);
@@ -164,8 +176,8 @@ app.post('/api/generate_code', async (req, res) => {
 
 app.post('/api/generate_educational_content', async (req, res) => {
   try {
-    const { prompt, difficulty } = req.body;
-    const { generated_educational_content } = await generateEducationalContent(prompt, difficulty);
+    const { prompt, difficulty, subject, format } = req.body;
+    const { generated_educational_content } = await generateEducationalContent(prompt, difficulty, subject, format);
     res.json({ generated_educational_content });
   } catch (error) {
     console.error('An error occurred while generating educational content:', error.message);

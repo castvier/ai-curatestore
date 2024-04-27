@@ -1,81 +1,49 @@
-import React, { useState } from 'react';
-import { generateContent } from '../api/contentApi';
+import React from 'react';
 import '../styles/styles.css';
 
-const ContentGenerator = () => {
-  const [prompt, setPrompt] = useState('');
-  const [tone, setTone] = useState('Neutral');
-  const [generatedContent, setGeneratedContent] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
+const ContentGenerator = ({ prompt, setPrompt, tone, setTone, length, setLength, audience, setAudience }) => {
   const toneOptions = ['Neutral', 'Formal', 'Informal', 'Persuasive', 'Enthusiastic'];
+  const lengthOptions = ['Short', 'Medium', 'Long'];
+  const audienceOptions = ['General', 'Technical', 'Business', 'Creative'];
 
-  const handlePromptChange = (e) => {
-    setPrompt(e.target.value);
-  };
-
-  const handleToneChange = (e) => {
-    setTone(e.target.value);
-  };
-
-  const handleContentGeneration = async () => {
-    if (!prompt) {
-      setError('Please enter a prompt for content generation.');
-      return;
-    }
-
-    // Check if the prompt is related to content generation
-    const isRelatedToContentGeneration = !/code|program|algorithm|function|class|method/i.test(prompt);
-    if (!isRelatedToContentGeneration) {
-      setError('The prompt should be related to content generation, not code. Please try again.');
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const generatedContent = await generateContent(prompt, tone);
-      setGeneratedContent(generatedContent.generated_content);
-    } catch (error) {
-      console.error('Error generating content:', error);
-      setError('Failed to generate content. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const handleToneChange = (e) => setTone(e.target.value);
+  const handleLengthChange = (e) => setLength(e.target.value);
+  const handleAudienceChange = (e) => setAudience(e.target.value);
 
   return (
     <div className="component">
-      <h2>Content Generator</h2>
-      <div>
-        <label htmlFor="prompt">Prompt:</label>
-        <input
-          type="text"
-          id="prompt"
-          value={prompt}
-          onChange={handlePromptChange}
-          placeholder="Enter your prompt for content generation..."
-        />
-        <label htmlFor="tone">Tone:</label>
-        <select id="tone" value={tone} onChange={handleToneChange}>
-          {toneOptions.map((tone) => (
-            <option key={tone} value={tone}>{tone}</option>
-          ))}
-        </select>
-        <button onClick={handleContentGeneration} disabled={isLoading}>
-          {isLoading ? 'Generating...' : 'Generate Content'}
-        </button>
-      </div>
-      {isLoading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
-      {generatedContent && (
-        <div>
-          <h3>Generated Content:</h3>
-          <p>{generatedContent}</p>
+      <div className="customization-options">
+        <div className="customization-feature">
+          <label htmlFor="tone">Tone:</label>
+          <select id="tone" value={tone} onChange={handleToneChange} className="customization-select">
+            {toneOptions.map((tone) => (
+              <option key={tone} value={tone}>
+                {tone}
+              </option>
+            ))}
+          </select>
         </div>
-      )}
+        <div className="customization-feature">
+          <label htmlFor="length">Length:</label>
+          <select id="length" value={length} onChange={handleLengthChange} className="customization-select">
+            {lengthOptions.map((length) => (
+              <option key={length} value={length}>
+                {length}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="customization-feature">
+          <label htmlFor="audience">Audience:</label>
+          <select id="audience" value={audience} onChange={handleAudienceChange} className="customization-select">
+            {audienceOptions.map((audience) => (
+              <option key={audience} value={audience}>
+                {audience}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
     </div>
   );
 };
